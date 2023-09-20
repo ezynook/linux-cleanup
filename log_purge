@@ -1,0 +1,78 @@
+#!/bin/bash
+#-------------------
+# Author: Pasit Y.
+#-------------------
+set -o pipefail
+
+Gre='\e[0;32m'
+Red='\e[0;31m'
+Whi='\e[0;37m'
+PATHLOG=("/var/log" "/root/.pm2/logs")
+
+if [ "$(cat /etc/os-release | grep rhel)" ]; then
+    OS="rpm"
+else
+    OS="deb"
+fi
+echo -e "Package type: ${Gre}${OS}${Whi}"
+echo -e "🗑️ ${Gre}Checking OS Type${Whi} SUCCESS!"
+sleep 3
+if [ "$OS" == "deb" ]; then
+    apt-get autoremove > /dev/null
+    rm -rf /var/cache/apt
+    apt-get autoclean > /dev/null
+    rm -rf /var/lib/snapd/snaps
+    rm -rf ~/.cache/thumbnails/*
+fi
+echo -e "🗑️ ${Gre}Checking and Clear memory/swap space${Whi} SUCCESS!"
+sleep 3
+if [ "$(free -m | grep Mem | awk '{print $4}')" -le 255 ]; then
+    sync; echo -e 3 > /proc/sys/vm/drop_caches
+    swapoff -a && swapon -a > /dev/null
+fi
+echo -e "🗑️ ${Gre}Remove Man${Whi} SUCCESS"
+sleep 3
+rm -rf /usr/share/man/?? 
+rm -rf /usr/share/man/??_*
+echo -e "🗑️ ${Gre}Delete all .gz and rotated file${Whi} SUCCESS!"
+sleep 3
+find /var/log -type f -regex ".*\.gz$" | xargs rm -Rf
+find /var/log -type f -regex ".*\.[0-9]$" | xargs rm -Rf
+echo -e "🗑️ ${Gre}Trim log files${Whi}"
+find /var -name "*.log" \( \( -size +50M -mtime +7 \) -o -mtime +30 \) -exec truncate {} --size 0 \;
+sleep 3
+if [ "$OS" == "rpm" ]; then
+    yum clean all > /dev/null
+    rm -rf /var/cache/yum
+    rm -rf /var/tmp/yum-*
+    echo -e "🗑️ ${Gre}Remove old kernels${Whi} SUCCESS!"
+    package-cleanup --oldkernels --count=2 -y > /dev/null
+    echo -e "🗑️ ${Gre}Remove the Composer cache${Whi} SUCCESS!"
+    rm -rf /root/.composer/cache
+    rm -rf /home/*/.composer/cache
+fi
+echo -e "🗑️ ${Gre}Remove Node.js caches${Whi} SUCCESS!"
+rm -rf /root/.npm /home/*/.npm /root/.node-gyp /home/*/.node-gyp /tmp/npm-* >/dev/null
+sleep 3
+echo -e "🗑️ ${Gre}Remove Mock caches${Whi}"
+rm -rf /var/cache/mock/* /var/lib/mock/* > /dev/null
+sleep 3
+echo -e "🗑️ ${Gre}Tail Log Last Proccess${Whi} SUCCESS!"
+for i in ${PATHLOG[@]}; do
+    if [ ! -d "$i" ]; then
+        exit 1
+    fi
+    for filename in $(find $i -name "*.log"); do
+        if [ "${filename##*.}" = "log" ]; then
+            tail -n -10 $filename > tmp.txt && mv tmp.txt $filename
+            echo -e "🗑️ ${Gre}Tail Logs -> ${filename}${Whi}"
+        else
+            echo -e "🗑️ ${Gre}Skipped: Not match logs type... ( ${filename##*.} )${Whi}"
+        fi
+    done
+done
+echo -e "${Gre}Cleaned Success all!${Whi}"
+echo -e "${Red} Script By${Red} ${Gre}Pasit Y.${Whi}"
+sleep 3
+clear
+exit 0
