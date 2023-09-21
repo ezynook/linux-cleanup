@@ -14,6 +14,7 @@ if [ "$(cat /etc/os-release | grep rhel)" ]; then
 else
     OS="deb"
 fi
+echo -e "${Red} Script By${Red} ${Gre}Pasit Y.${Whi}"
 echo -e "Package type: ${Gre}${OS}${Whi}"
 echo -e "🗑️ ${Gre}Checking OS Type${Whi} SUCCESS!"
 sleep 3
@@ -72,7 +73,6 @@ for i in ${PATHLOG[@]}; do
     done
 done
 echo -e "${Gre}Cleaned Success all!${Whi}"
-echo -e "${Red} Script By${Red} ${Gre}Pasit Y.${Whi}"
 sleep 3
 clear
 exit 0
