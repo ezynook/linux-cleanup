@@ -27,10 +27,8 @@ if [ "$OS" == "deb" ]; then
 fi
 echo -e "🗑️ ${Gre}Checking and Clear memory/swap space${Whi} SUCCESS!"
 sleep 3
-if [ "$(free -m | grep Mem | awk '{print $4}')" -le 255 ]; then
-    sync; echo -e 3 > /proc/sys/vm/drop_caches
-    swapoff -a && swapon -a > /dev/null
-fi
+sync; echo -e 3 > /proc/sys/vm/drop_caches
+swapoff -a && swapon -a > /dev/null
 echo -e "🗑️ ${Gre}Remove Man${Whi} SUCCESS"
 sleep 3
 rm -rf /usr/share/man/?? 
