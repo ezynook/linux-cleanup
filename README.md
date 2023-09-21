@@ -29,7 +29,7 @@
 ---
 ## Install
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ezynook/linux-cleanup/main/install.sh | bash -s --install
+curl -fsSL https://raw.githubusercontent.com/ezynook/linux-cleanup/main/install.sh | bash -s -- --install
 ```
 ## How to Use
 ```bash
@@ -43,5 +43,5 @@ $ linux-cleanup
 ```
 ## Uninstall
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ezynook/linux-cleanup/main/install.sh | bash -s --uninstall
+curl -fsSL https://raw.githubusercontent.com/ezynook/linux-cleanup/main/install.sh | bash -s -- --uninstall
 ```
