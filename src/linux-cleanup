@@ -19,16 +19,16 @@ echo -e "Package type: ${Gre}${OS}${Whi}"
 echo -e "🗑️ ${Gre}Checking OS Type${Whi} SUCCESS!"
 sleep 3
 if [ "$OS" == "deb" ]; then
-    apt-get autoremove > /dev/null
+    apt-get autoremove 2>/dev/null
     rm -rf /var/cache/apt
-    apt-get autoclean > /dev/null
+    apt-get autoclean 2>/dev/null
     rm -rf /var/lib/snapd/snaps
     rm -rf ~/.cache/thumbnails/*
 fi
 echo -e "🗑️ ${Gre}Checking and Clear memory/swap space${Whi} SUCCESS!"
 sleep 3
 sync; echo -e 3 > /proc/sys/vm/drop_caches
-swapoff -a && swapon -a > /dev/null
+swapoff -a && swapon -a 2>/dev/null
 echo -e "🗑️ ${Gre}Remove Man${Whi} SUCCESS"
 sleep 3
 rm -rf /usr/share/man/?? 
@@ -41,11 +41,11 @@ echo -e "🗑️ ${Gre}Trim log files${Whi}"
 find /var -name "*.log" \( \( -size +50M -mtime +7 \) -o -mtime +30 \) -exec truncate {} --size 0 \;
 sleep 3
 if [ "$OS" == "rpm" ]; then
-    yum clean all > /dev/null
+    yum clean all 2>/dev/null
     rm -rf /var/cache/yum
     rm -rf /var/tmp/yum-*
     echo -e "🗑️ ${Gre}Remove old kernels${Whi} SUCCESS!"
-    package-cleanup --oldkernels --count=2 -y > /dev/null
+    package-cleanup --oldkernels --count=2 -y 2>/dev/null
     echo -e "🗑️ ${Gre}Remove the Composer cache${Whi} SUCCESS!"
     rm -rf /root/.composer/cache
     rm -rf /home/*/.composer/cache
@@ -54,7 +54,7 @@ echo -e "🗑️ ${Gre}Remove Node.js caches${Whi} SUCCESS!"
 rm -rf /root/.npm /home/*/.npm /root/.node-gyp /home/*/.node-gyp /tmp/npm-* >/dev/null
 sleep 3
 echo -e "🗑️ ${Gre}Remove Mock caches${Whi}"
-rm -rf /var/cache/mock/* /var/lib/mock/* > /dev/null
+rm -rf /var/cache/mock/* /var/lib/mock/* 2>/dev/null
 sleep 3
 echo -e "🗑️ ${Gre}Tail Log Last Proccess${Whi} SUCCESS!"
 for i in ${PATHLOG[@]}; do
