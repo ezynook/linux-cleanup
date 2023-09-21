@@ -35,3 +35,9 @@ curl -fsSL https://raw.githubusercontent.com/ezynook/linux-cleanup/main/install.
 ```bash
 $ linux-cleanup
 ```
+## Create Scheduler
+[Crontab time pattern](https://crontab.guru/)
+
+```bash
+59 23 * * * linux-cleanup #Every 23:59 every days
+```
